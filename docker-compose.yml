@@ -1,0 +1,28 @@
+services:
+  web:
+    build: .
+    ports: 
+      - "127.0.0.1:3000:3000"
+    volumes:
+      - type: bind
+        source: .
+        target: /opt/app
+    environment:
+      SECRET_KEY_BASE: ${SECRET_KEY_BASE}
+      REDIS_URL: "redis://redis:6379/1"
+      RAILS_SERVE_STATIC_FILES: 1
+    command: rails server -b 0.0.0.0
+    depends_on:
+      - db
+  db:
+    image: postgres
+    volumes:
+      - type: volume
+        source: db
+        target: /var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: password
+  redis:
+    image: redis
+volumes:
+  db:
